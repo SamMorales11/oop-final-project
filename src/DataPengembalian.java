@@ -3,6 +3,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.table.DefaultTableModel;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class DataPengembalian extends JFrame {
     private JTextField textFieldNama, textFieldNomorPlat, textFieldLamaPeminjaman, textFieldTanggalPeminjaman, textFieldTanggalPengembalian, textFieldHarga;
@@ -10,6 +15,7 @@ public class DataPengembalian extends JFrame {
     private JButton buttonSubmit, buttonDelete, buttonBack;
     private JTable table;
     private DefaultTableModel model;
+    private String dataFilePath = "data_pengembalian.txt";
 
     public DataPengembalian() {
         setTitle("Data Pengembalian");
@@ -48,7 +54,6 @@ public class DataPengembalian extends JFrame {
         model.addColumn("Tanggal Pengembalian");
         model.addColumn("Harga");
 
-        
         add(labelNama);
         add(textFieldNama);
         add(labelNomorPlat);
@@ -65,6 +70,9 @@ public class DataPengembalian extends JFrame {
         add(buttonDelete);
         add(buttonBack);
         add(new JScrollPane(table));
+
+        // Muat data tersimpan
+        loadSavedData();
 
         // fungsi tombol masukkan data
         buttonSubmit.addActionListener(new ActionListener() {
@@ -86,23 +94,28 @@ public class DataPengembalian extends JFrame {
                 textFieldTanggalPeminjaman.setText("");
                 textFieldTanggalPengembalian.setText("");
                 textFieldHarga.setText("");
+
+                // Simpan data
+                saveDataToFile();
             }
         });
 
-        // fungis tombol hapus
+        // fungsi tombol hapus
         buttonDelete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = table.getSelectedRow();
                 if (row >= 0) {
                     // hapus baris yang dipilih
                     model.removeRow(row);
+                   
+                    saveDataToTextFile();
                 } else {
                     JOptionPane.showMessageDialog(null, "Pilih baris yang ingin dihapus.");
                 }
             }
         });
 
-        // fungsi tobol kembali
+        // fungsi tombol kembali
         buttonBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // tutup window DataPengembalian lalu kembali ke MainMenu
@@ -110,6 +123,63 @@ public class DataPengembalian extends JFrame {
                 new MainMenu().setVisible(true);
             }
         });
+    }
+
+    // simpan data
+    private void saveDataToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFilePath, true))) {
+            int rowCount = model.getRowCount();
+            int colCount = model.getColumnCount();
+            if (rowCount > 0) {
+                for (int i = rowCount - 1; i < rowCount; i++) {
+                    String nama = model.getValueAt(i, 0).toString();
+                    String nomorPlat = model.getValueAt(i, 1).toString();
+                    String lamaPeminjaman = model.getValueAt(i, 2).toString();
+                    String tanggalPeminjaman = model.getValueAt(i, 3).toString();
+                    String tanggalPengembalian = model.getValueAt(i, 4).toString();
+                    String harga = model.getValueAt(i, 5).toString();
+                    String data = nama + "," + nomorPlat + "," + lamaPeminjaman + "," + tanggalPeminjaman + "," + tanggalPengembalian + "," + harga;
+                    writer.write(data);
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    private void saveDataToTextFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFilePath))) {
+            int rowCount = model.getRowCount();
+            int colCount = model.getColumnCount();
+            for (int i = 0; i < rowCount; i++) {
+                String nama = model.getValueAt(i, 0).toString();
+                String nomorPlat = model.getValueAt(i, 1).toString();
+                String lamaPeminjaman = model.getValueAt(i, 2).toString();
+                String tanggalPeminjaman = model.getValueAt(i, 3).toString();
+                String tanggalPengembalian = model.getValueAt(i, 4).toString();
+                String harga = model.getValueAt(i, 5).toString();
+                String data = nama + "," + nomorPlat + "," + lamaPeminjaman + "," + tanggalPeminjaman + "," + tanggalPengembalian + "," + harga;
+                writer.write(data);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // muat data
+    private void loadSavedData() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(dataFilePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                model.addRow(data);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

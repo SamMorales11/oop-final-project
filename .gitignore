@@ -1,2 +1,5 @@
 .vscode/*
 bin/*
+data_mobil.txt
+data_peminjaman.txt
+data_pengembalian.txt

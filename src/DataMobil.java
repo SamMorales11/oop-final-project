@@ -2,6 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.table.DefaultTableModel;
 
 public class DataMobil extends JFrame {
@@ -10,6 +15,7 @@ public class DataMobil extends JFrame {
     private JButton buttonSubmit, buttonDelete, buttonBack;
     private JTable table;
     private DefaultTableModel model;
+    private String dataFilePath;
 
     public DataMobil() {
         setTitle("Data Mobil");
@@ -55,6 +61,12 @@ public class DataMobil extends JFrame {
         add(buttonBack);
         add(new JScrollPane(table));
 
+        // Path data file
+        dataFilePath = "data_mobil.txt";
+
+        // Memuat ulang data yg tersimpan
+        loadSavedData();
+
         // fungsi untuk tombol masukkan data
         buttonSubmit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -65,6 +77,8 @@ public class DataMobil extends JFrame {
 
                 // Menambahkan data ke tabel data
                 model.addRow(new Object[]{merk, nomorPlat, tahun, harga});
+
+                saveDataToFile(merk, nomorPlat, tahun, harga);
 
                 // Membersihkan kolom teks setelah data ditambahkan
                 textFieldMerk.setText("");
@@ -79,8 +93,10 @@ public class DataMobil extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int row = table.getSelectedRow();
                 if (row >= 0) {
-                    // fungsi untuk baris yang akan dihapus
+                    // Menghapus data dari tabel
                     model.removeRow(row);
+
+                    saveDataToTextFile();
                 } else {
                     JOptionPane.showMessageDialog(null, "Pilih baris data yang ingin dihapus.");
                 }
@@ -95,6 +111,49 @@ public class DataMobil extends JFrame {
                 new MainMenu().setVisible(true);
             }
         });
+    }
+
+    // simpan data
+    private void saveDataToFile(String merk, String nomorPlat, String tahun, String harga) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFilePath, true))) {
+            String data = merk + "," + nomorPlat + "," + tahun + "," + harga;
+            writer.write(data);
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+   
+    private void saveDataToTextFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFilePath))) {
+            int rowCount = model.getRowCount();
+            for (int i = 0; i < rowCount; i++) {
+                String merk = model.getValueAt(i, 0).toString();
+                String nomorPlat = model.getValueAt(i, 1).toString();
+                String tahun = model.getValueAt(i, 2).toString();
+                String harga = model.getValueAt(i, 3).toString();
+
+                String data = merk + "," + nomorPlat + "," + tahun + "," + harga;
+                writer.write(data);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // muat data
+    private void loadSavedData() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(dataFilePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                model.addRow(data);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
