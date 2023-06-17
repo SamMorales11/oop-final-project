@@ -35,7 +35,7 @@ public class HalamanLogin extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String username = textFieldUsername.getText();
                 String password = new String(passwordField.getPassword());
-                if (username.equals("admin") && password.equals("07889213")) {
+                if (username.equals("admin") && password.equals("admin")) {
                     MainMenu mainMenu = new MainMenu();
                     mainMenu.setVisible(true);
                     dispose();

@@ -7,6 +7,7 @@ public class MainMenu extends JFrame {
     private JButton buttonDataMobil;
     private JButton buttonDataPeminjaman;
     private JButton buttonDataPengembalian;
+    private JButton buttonKeluar;
 
     public MainMenu() {
         setTitle("Main Menu");
@@ -20,10 +21,12 @@ public class MainMenu extends JFrame {
         buttonDataMobil = new JButton("Data Mobil");
         buttonDataPeminjaman = new JButton("Pendataan Peminjaman");
         buttonDataPengembalian = new JButton("Pendataan Pengembalian Mobil");
+        buttonKeluar = new JButton("Keluar");
 
         panel.add(buttonDataMobil);
         panel.add(buttonDataPeminjaman);
         panel.add(buttonDataPengembalian);
+        panel.add(buttonKeluar);
 
         buttonDataMobil.addActionListener(new ActionListener() {
             @Override
@@ -46,6 +49,16 @@ public class MainMenu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 DataPengembalian dataPengembalian = new DataPengembalian();
                 dataPengembalian.setVisible(true);
+            }
+        });
+
+        // Button Keluar
+        buttonKeluar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Logika untuk aksi saat tombol "Keluar" ditekan
+                // Misalnya, tampilkan dialog konfirmasi dan tutup program jika dikonfirmasi
+                dispose();
             }
         });
 
