@@ -181,9 +181,7 @@ public class DataPeminjaman extends JFrame {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length == 8) {
-                    model.addRow(new Object[]{data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]});
-                }
+                model.addRow(data);
             }
         } catch (IOException e) {
             e.printStackTrace();

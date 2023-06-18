@@ -32,6 +32,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DataMobil dataMobil = new DataMobil();
+                dispose();
                 dataMobil.setVisible(true);
             }
         });
@@ -40,6 +41,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DataPeminjaman dataPeminjaman = new DataPeminjaman();
+                dispose();
                 dataPeminjaman.setVisible(true);
             }
         });
@@ -47,7 +49,8 @@ public class MainMenu extends JFrame {
         buttonDataPengembalian.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DataPengembalian dataPengembalian = new DataPengembalian();
+                DataPengembalian dataPengembalian = new DataPengembalian(null);
+                dispose();
                 dataPengembalian.setVisible(true);
             }
         });
